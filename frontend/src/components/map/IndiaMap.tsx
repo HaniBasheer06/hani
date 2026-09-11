@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CircleMarker, MapContainer, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Crosshair, LocateFixed, MapPinned, MousePointer2 } from 'lucide-react';
+import { Crosshair, LocateFixed, MapPinned, Moon, MousePointer2, Sun } from 'lucide-react';
 import { apiClient } from '../../api/client';
 import { useFilterStore } from '../../store/useFilterStore';
 import type { MapPoint } from '../../types/api';
@@ -19,6 +19,7 @@ function ClickCapture({ enabled }: { enabled: boolean }) {
 export function IndiaMap({ state, district, selectedDepositId }: { state: string; district: string; selectedDepositId: string | null }) {
   const [predictMode, setPredictMode] = useState(false);
   const [tileError, setTileError] = useState(false);
+  const [mapMode, setMapMode] = useState<'light' | 'dark'>('light');
   const coordinate = useFilterStore((state) => state.mapCoordinate);
   const selectDeposit = useFilterStore((state) => state.selectDeposit);
   const setMapCoordinate = useFilterStore((state) => state.setMapCoordinate);
@@ -40,13 +41,14 @@ export function IndiaMap({ state, district, selectedDepositId }: { state: string
   return <div className={`map-stage ${predictMode ? 'predict-mode' : ''}`}>
     <div className="map-summary"><div><MapPinned size={14} /><strong>{points.length}</strong><span>records visible</span></div><div><strong>{groups.length}</strong><span>map locations</span></div><div><strong>{totalProduction >= 1e6 ? `${(totalProduction / 1e6).toFixed(1)}M` : totalProduction.toLocaleString('en-IN')}</strong><span>tonnes output</span></div></div>
     <MapContainer center={[20.5937, 78.9629]} zoom={5} minZoom={4} maxZoom={8} maxBounds={[[4, 60], [40, 105]]} scrollWheelZoom>
-      {!tileError && <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" eventHandlers={{ tileerror: () => setTileError(true) }} />}
+      {!tileError && <TileLayer key={mapMode} attribution='&copy; CARTO' url={`https://{s}.basemaps.cartocdn.com/${mapMode === 'dark' ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`} eventHandlers={{ tileerror: () => setTileError(true) }} />}
       <ClickCapture enabled={predictMode} />
       <MapSelection points={points} selectedDepositId={selectedDepositId} />
       {groups.map((group) => <DepositGroup key={`${group[0].latitude}-${group[0].longitude}`} points={group} maxProduction={maxProduction} selectedDepositId={selectedDepositId} onInspect={(point) => { selectDeposit(point.deposit_id); setMapCoordinate({ lat: point.latitude, lng: point.longitude }); }} />)}
       {coordinate && <CircleMarker center={[coordinate.lat, coordinate.lng]} radius={10} pathOptions={{ color: '#fbbf24', fillColor: '#fbbf24', fillOpacity: 0.9, className: 'target-pin' }} />}
     </MapContainer>
     <button className={`map-mode ${predictMode ? 'active' : ''}`} onClick={() => setPredictMode((value) => !value)}>{predictMode ? <Crosshair size={15} /> : <LocateFixed size={15} />}{predictMode ? 'Click map to test' : 'Test feasibility on map'}</button>
+    <button className="map-theme" onClick={() => { setTileError(false); setMapMode((mode) => mode === 'light' ? 'dark' : 'light'); }} aria-label={`Switch to ${mapMode === 'light' ? 'dark' : 'light'} map`} title={`Switch to ${mapMode === 'light' ? 'dark' : 'light'} map`}>{mapMode === 'light' ? <Moon size={15} /> : <Sun size={15} />}</button>
     <div className="map-guide"><MousePointer2 size={13} /><span>{predictMode ? 'Click anywhere to analyze a location' : 'Select a marker to inspect inventory'}</span></div>
     <div className="map-legend"><span><i className="legend-dot small" /> Lower output</span><span><i className="legend-dot large" /> Higher output</span><span><i className="legend-dot cluster" /> Shared centroid</span></div>
     {tileError && <div className="map-fallback"><strong>Basemap unavailable</strong><span>Deposit coordinates remain available for analysis.</span></div>}
