@@ -23,7 +23,7 @@ export function IndiaMap({ state, district, selectedDepositId }: { state: string
   const selectDeposit = useFilterStore((state) => state.selectDeposit);
   const setMapCoordinate = useFilterStore((state) => state.setMapCoordinate);
   const { data, isLoading, isError } = useQuery({ queryKey: ['map-deposits'], queryFn: apiClient.mapDeposits });
-  const points = data?.points.filter((point) => (!state || point.state === state) && (!district || point.district === district)) ?? [];
+  const points = (data?.points ?? []).filter((point) => (!state || point.state === state) && (!district || point.district === district));
   const groups = useMemo(() => {
     const grouped = new Map<string, MapPoint[]>();
     points.forEach((point) => {

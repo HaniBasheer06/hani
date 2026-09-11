@@ -29,7 +29,7 @@ export function Dashboard() {
   const demoPrediction = useMutation({ mutationFn: apiClient.predict });
   const stateOptions = [...INDIA_ADMINISTRATIVE_AREAS].sort();
   const stateValue = filters.state;
-  const districts = filterOptions.data?.items.filter((item) => !filters.state || item.State === filters.state).map((item) => item.District).filter((d): d is string => Boolean(d && d !== 'Unknown')) ?? [];
+  const districts = (filterOptions.data?.items ?? []).filter((item) => !filters.state || item.State === filters.state).map((item) => item.District).filter((d): d is string => Boolean(d && d !== 'Unknown'));
   const districtOptions = [...new Set(districts)];
   const filteredRows = (filterOptions.data?.items ?? []).filter((item) => {
     const stateMatch = !filters.state || item.State === filters.state;
@@ -63,7 +63,7 @@ export function Dashboard() {
       </header>
 
       <section className="hero-row">
-        <div><p className="eyebrow">NATIONAL RESOURCE INTELLIGENCE / {summary.data?.year_range?.[summary.data.year_range.length - 1] ?? 'AVAILABLE DATA'}</p><h1>Mining operations, <em>mapped.</em></h1><p className="hero-copy">A decision-support surface for India&apos;s mineral production, terrain signals, and feasibility intelligence.</p></div>
+        <div><p className="eyebrow">NATIONAL RESOURCE INTELLIGENCE / {summary.data?.year_range?.[(summary.data?.year_range?.length ?? 1) - 1] ?? 'AVAILABLE DATA'}</p><h1>Mining operations, <em>mapped.</em></h1><p className="hero-copy">A decision-support surface for India&apos;s mineral production, terrain signals, and feasibility intelligence.</p></div>
         <div className="hero-actions"><button className="demo-button" onClick={runDemo} disabled={demoRunning || mapInventory.isLoading} aria-label="Run a demo using a real inventory record">{demoRunning ? <Square size={14} /> : <Play size={14} />}{demoRunning ? 'RUNNING REAL DEMO' : 'RUN REAL DEMO'}</button></div>
       </section>
 
