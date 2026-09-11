@@ -198,4 +198,4 @@ Start with these endpoints:
 5. `/api/model/metrics`
 6. `/api/model/predict`
 
-The backend trains from the cleaned district data in `data/cleaned_districts.csv` and serves the consolidated raw source at `combined_dataset.csv` for auditability. Coordinate-only prediction requests are hydrated with the nearest district context and nearest major port.
+The backend trains from the cleaned district data in `backend/data/cleaned_districts.csv` and serves the consolidated raw source at `backend/combined_dataset.csv` for auditability. Coordinate-only prediction requests are hydrated with the nearest district context and nearest major port.

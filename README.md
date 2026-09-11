@@ -2,10 +2,10 @@
 
 ## Inputs
 
-- `ibm_yearbook/`: IBM Yearbook PDFs and extracted tables. The builder uses `pdfplumber` and converts extracted tables to CSV.
-- `arcgis_data/`: cleaned ArcGIS or OGD India CSV exports. Spatial source files should provide `Deposit_ID`, `Latitude`, `Longitude`, `Host_Rock`, `Formation`, and `Soil_Type` when available.
-- `gsi_data/`: GSI or state survey CSV exports aligned to `State`, `District`, `Reserves_tonnes`, and `Grade_pct`.
-- `external_data/`: IMD, road, logistics, and weather CSVs aligned to `State`, `District`, or `Deposit_ID`.
+- `backend/ibm_yearbook/`: IBM Yearbook PDFs and extracted tables.
+- `backend/arcgis_data/`: cleaned ArcGIS or OGD India CSV exports.
+- `backend/gsi_data/`: GSI or state survey CSV exports.
+- `backend/external_data/`: IMD, road, logistics, and weather CSVs.
 
 Place source files in these folders. Screenshots are not inputs.
 
@@ -24,11 +24,12 @@ The script reads CSV files, normalizes headers to the canonical manganese datase
 ## ML Pipeline
 The notebook workflow is still usable with the updated schema when column names are mapped to the canonical names above. Derived fields such as `Reserve_to_Production_ratio` and `Production_Gap_tonnes` are computed during the build step so the downstream model can work directly from the feature table.
 
-## API backend
+## API backend (`backend/`)
 
 Prepare data and train the model:
 
 ```text
+cd backend
 python -m src.data_pipeline
 python -m src.train
 ```
@@ -39,14 +40,15 @@ Start the API:
 uvicorn main:app --reload
 ```
 
-The frontend route contract is documented in `FRONTEND_API_SPEC.md`. The persisted model is saved at `models/model.pkl`.
+The frontend route contract is documented in `FRONTEND_API_SPEC.md`. The persisted model is saved at `backend/models/model.pkl`.
 The proposed frontend routes and response shapes are documented in `FRONTEND_API_SPEC.md`. No HTTP backend is included yet.
 
 ## Frontend dashboard
 
-The Vite React dashboard lives in `src/` alongside the Python API modules. Install the frontend dependencies and start it with:
+The Vite React dashboard lives in `frontend/`. Install the frontend dependencies and start it with:
 
 ```text
+cd frontend
 npm install
 npm run dev
 ```
