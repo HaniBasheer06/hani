@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CircleMarker, MapContainer, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Crosshair, LocateFixed } from 'lucide-react';
+import { Crosshair, LocateFixed, MapPinned, MousePointer2 } from 'lucide-react';
 import { apiClient } from '../../api/client';
 import { useFilterStore } from '../../store/useFilterStore';
 import type { MapPoint } from '../../types/api';
@@ -33,10 +33,12 @@ export function IndiaMap({ state, district, selectedDepositId }: { state: string
     return [...grouped.values()];
   }, [points]);
   const maxProduction = useMemo(() => Math.max(...points.map((point) => point.production_tonnes ?? 0), 1), [points]);
+  const totalProduction = points.reduce((total, point) => total + (point.production_tonnes ?? 0), 0);
 
   if (isLoading) return <div className="map-stage"><LoadingBlock /></div>;
   if (isError) return <div className="map-stage"><ErrorState message="Map points unavailable." /></div>;
   return <div className={`map-stage ${predictMode ? 'predict-mode' : ''}`}>
+    <div className="map-summary"><div><MapPinned size={14} /><strong>{points.length}</strong><span>records visible</span></div><div><strong>{groups.length}</strong><span>map locations</span></div><div><strong>{totalProduction >= 1e6 ? `${(totalProduction / 1e6).toFixed(1)}M` : totalProduction.toLocaleString('en-IN')}</strong><span>tonnes output</span></div></div>
     <MapContainer center={[20.5937, 78.9629]} zoom={5} minZoom={4} maxZoom={8} maxBounds={[[4, 60], [40, 105]]} scrollWheelZoom>
       {!tileError && <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" eventHandlers={{ tileerror: () => setTileError(true) }} />}
       <ClickCapture enabled={predictMode} />
@@ -45,7 +47,8 @@ export function IndiaMap({ state, district, selectedDepositId }: { state: string
       {coordinate && <CircleMarker center={[coordinate.lat, coordinate.lng]} radius={10} pathOptions={{ color: '#fbbf24', fillColor: '#fbbf24', fillOpacity: 0.9, className: 'target-pin' }} />}
     </MapContainer>
     <button className={`map-mode ${predictMode ? 'active' : ''}`} onClick={() => setPredictMode((value) => !value)}>{predictMode ? <Crosshair size={15} /> : <LocateFixed size={15} />}{predictMode ? 'Click map to test' : 'Test feasibility on map'}</button>
-    <div className="map-legend"><span><i className="legend-dot small" /> Lower output</span><span><i className="legend-dot large" /> Higher output</span></div>
+    <div className="map-guide"><MousePointer2 size={13} /><span>{predictMode ? 'Click anywhere to analyze a location' : 'Select a marker to inspect inventory'}</span></div>
+    <div className="map-legend"><span><i className="legend-dot small" /> Lower output</span><span><i className="legend-dot large" /> Higher output</span><span><i className="legend-dot cluster" /> Shared centroid</span></div>
     {tileError && <div className="map-fallback"><strong>Basemap unavailable</strong><span>Deposit coordinates remain available for analysis.</span></div>}
     <div className="map-note">Coordinates represent district-level centroids where exact deposit coordinates are unavailable.</div>
   </div>;
