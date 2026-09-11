@@ -1,0 +1,34 @@
+{
+  "source_file": "Pasted text.txt",
+  "target": "Annual_Production_tonnes",
+  "allowed_features_for_random_forest": [
+    "State",
+    "District",
+    "Deposit_ID",
+    "Latitude",
+    "Longitude",
+    "Reserves_tonnes",
+    "Grade_pct",
+    "Host_Rock",
+    "Formation",
+    "Avg_Temperature_C",
+    "Annual_Precip_mm",
+    "Rainy_Days",
+    "Road_Accessibility",
+    "Distance_to_Port_km",
+    "Topo_Slope_deg",
+    "Soil_Type",
+    "Year",
+    "Year_Index"
+  ],
+  "excluded_from_random_forest": {
+    "Annual_Production_tonnes": "prediction target; never used as an input feature",
+    "Reserve_to_Production_ratio": "directly depends on Annual_Production_tonnes",
+    "Production_Gap_tonnes": "treated as target-derived / potentially target-derived",
+    "Synthetic": "provenance flag; exclude from model inputs to avoid learning data origin"
+  },
+  "notes": [
+    "Reserves_tonnes was retained because it is not itself a target-derived column, but it should be assessed for availability and temporal validity before modeling.",
+    "No missing values were fabricated or imputed; all remaining fields preserve their source values."
+  ]
+}

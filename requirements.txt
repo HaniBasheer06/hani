@@ -1,0 +1,10 @@
+pandas
+pdfplumber
+geopandas
+numpy
+scikit-learn
+joblib
+scipy
+matplotlib
+fastapi
+uvicorn

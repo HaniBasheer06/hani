@@ -1,0 +1,26 @@
+{
+  "source_file": "C:\\Users\\Admin\\AppData\\Local\\Temp\\codex-file-preview-UZIotN\\Pasted text.txt",
+  "original_row_count": 391,
+  "original_column_count": 22,
+  "exact_duplicate_rule": "Rows identical across every source column were removed after the first occurrence.",
+  "exact_duplicate_rows_removed": 0,
+  "removed_source_csv_row_numbers": [],
+  "duplicate_observation_diagnostic_rule": "Rows sharing State, District, Deposit_ID, Latitude, Longitude, Year, and Synthetic were flagged for audit only; no rows were removed by this rule because it may represent legitimate repeated observations.",
+  "repeated_observation_groups_after_exact_deduplication": 0,
+  "repeated_observation_rows_after_exact_deduplication": 0,
+  "leakage_columns_removed_from_output": [
+    "Reserve_to_Production_ratio",
+    "Production_Gap_tonnes"
+  ],
+  "combined_final_row_count": 391,
+  "combined_final_column_count": 20,
+  "synthetic_field_values_after_exact_deduplication": {
+    "False": 31,
+    "True": 360
+  },
+  "real_rows_Synthetic_False": 31,
+  "synthetic_rows_Synthetic_True": 360,
+  "unclassified_synthetic_rows": 0,
+  "target_values_changed": false,
+  "missing_values_fabricated": false
+}

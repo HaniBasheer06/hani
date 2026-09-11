@@ -1,0 +1,16 @@
+.git
+.gitignore
+venv
+node_modules
+dist
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+notebooks
+ibm_yearbook
+arcgis_data
+gsi_data
+external_data
+plots
+models/model.pkl
