@@ -38,7 +38,7 @@ export function IndiaMap({ state, district, selectedDepositId }: { state: string
   if (isError) return <div className="map-stage"><ErrorState message="Map points unavailable." /></div>;
   return <div className={`map-stage ${predictMode ? 'predict-mode' : ''}`}>
     <MapContainer center={[20.5937, 78.9629]} zoom={5} minZoom={4} maxZoom={8} maxBounds={[[4, 60], [40, 105]]} scrollWheelZoom>
-      {!tileError && <TileLayer attribution='&copy; CARTO' url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" eventHandlers={{ tileerror: () => setTileError(true) }} />}
+      {!tileError && <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" eventHandlers={{ tileerror: () => setTileError(true) }} />}
       <ClickCapture enabled={predictMode} />
       <MapSelection points={points} selectedDepositId={selectedDepositId} />
       {groups.map((group) => <DepositGroup key={`${group[0].latitude}-${group[0].longitude}`} points={group} maxProduction={maxProduction} selectedDepositId={selectedDepositId} onInspect={(point) => { selectDeposit(point.deposit_id); setMapCoordinate({ lat: point.latitude, lng: point.longitude }); }} />)}
